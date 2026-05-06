@@ -21,6 +21,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const token = localStorage.getItem("accessToken");
       if (!token) { setLoading(false); return; }
       const { data } = await api.get("/auth/me");
+      if (typeof data !== 'object' || !data.name) {
+        throw new Error("Invalid user data received");
+      }
       setUser(data);
     } catch {
       localStorage.removeItem("accessToken");

@@ -63,6 +63,46 @@ A modern, productivity-focused SaaS platform for managing projects, tasks, and t
    npx tsx seed.ts
    ```
 
+## Deployment (Railway)
+
+This application is ready to be deployed on [Railway](https://railway.app/). Railway supports deploying monorepos by configuring the root directory for each service.
+
+### Step 1: Create a Railway Account & Link GitHub
+1. Go to [Railway.app](https://railway.app/) and sign up.
+2. Link your GitHub account so Railway can access this repository.
+
+### Step 2: Deploy the Database
+1. Click **"New Project"** -> **"Provision PostgreSQL"**.
+2. Railway will instantly create a PostgreSQL database. 
+3. Click on the PostgreSQL service, go to the **Variables** tab, and copy the `DATABASE_URL`.
+
+### Step 3: Deploy the Backend
+1. Click **"New"** -> **"GitHub Repo"** and select your `team-task-manager` repository.
+2. Once the service is created, go to **Settings**.
+3. Under **Build**, set the **Root Directory** to `/backend`.
+4. Go to the **Variables** tab and add the following:
+   - `DATABASE_URL`: (Paste the URL from Step 2)
+   - `JWT_SECRET`: (Create a secure random string)
+   - `JWT_REFRESH_SECRET`: (Create another secure random string)
+   - `NODE_ENV`: `production`
+   - `PORT`: `8000`
+5. Go back to **Settings**, scroll down to **Networking**, and click **"Generate Domain"**. Copy this URL (e.g., `https://backend-production-xxxx.up.railway.app`).
+
+### Step 4: Deploy the Frontend
+1. Click **"New"** -> **"GitHub Repo"** and select your `team-task-manager` repository again to create a second service.
+2. Go to **Settings** for this new service.
+3. Under **Build**, set the **Root Directory** to `/frontend`.
+4. Go to the **Variables** tab and add:
+   - `VITE_API_URL`: (Paste the backend URL generated in Step 3)
+5. Go to **Settings** -> **Networking** and click **"Generate Domain"**. This will be your live application URL!
+
+### Step 5: (Optional) Seed the Database in Production
+If you want your sample data on the live site:
+1. Go to your Backend service in Railway.
+2. Open the **Command Palette** (Cmd/Ctrl + K) and select **"Execute Command"**.
+3. Run `npm run db:push` to ensure the schema is updated.
+4. Run `npx tsx seed.ts` to populate the database.
+
 ## Design Philosophy
 
 The application follows a modern SaaS design language:

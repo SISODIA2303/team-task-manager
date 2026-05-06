@@ -10,10 +10,12 @@ import dashboardRoutes from "./routes/dashboard";
 
 const app = express();
 
+const allowedOrigin = config.frontendUrl.endsWith('/') ? config.frontendUrl.slice(0, -1) : config.frontendUrl;
+
 // ─── Middleware ───────────────────────────────────────────
 app.use(helmet());
 app.use(cors({
-  origin: [config.frontendUrl, "http://localhost:5173", "http://localhost:5174", "http://127.0.0.1:5173", "http://127.0.0.1:5174"],
+  origin: [allowedOrigin, "http://localhost:5173", "http://localhost:5174", "http://127.0.0.1:5173", "http://127.0.0.1:5174"],
   credentials: true,
 }));
 app.use(morgan("dev"));
@@ -43,8 +45,8 @@ app.use((err: Error, _req: express.Request, res: express.Response, _next: expres
 });
 
 // ─── Start Server ────────────────────────────────────────
-app.listen(config.port, () => {
-  console.log(`🚀 Server running on http://localhost:${config.port}`);
+app.listen(config.port, "0.0.0.0", () => {
+  console.log(`🚀 Server running on http://0.0.0.0:${config.port}`);
   console.log(`📝 Environment: ${config.nodeEnv}`);
 });
 
